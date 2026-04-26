@@ -2,6 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Прокси Telegram</title>
     <style>
         * {
@@ -16,10 +17,12 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            padding: 20px;
         }
         .container {
             text-align: center;
             padding: 20px;
+            max-width: 100%;
         }
         .telegram-btn {
             background: #2aabee;
@@ -51,13 +54,42 @@
             padding: 12px 18px;
             border-radius: 24px;
             max-width: 400px;
+            text-align: left;
+            word-break: break-word;
+            overflow-wrap: break-word;
+        }
+        .info p {
+            margin: 6px 0;
+        }
+        .info code {
+            background: #0f172a;
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-family: monospace;
+            font-size: 12px;
+            color: #94a3b8;
+            word-break: break-all;
         }
         .error {
             background: #7f1a1a;
             color: #fecaca;
-            padding: 12px 20px;
-            border-radius: 28px;
-            font-size: 14px;
+        }
+        .error code {
+            background: #4a0e0e;
+            color: #ffb3b3;
+        }
+        @media (max-width: 480px) {
+            .container {
+                padding: 16px;
+            }
+            .info {
+                max-width: 90vw;
+                font-size: 13px;
+            }
+            .telegram-btn {
+                padding: 12px 24px;
+                font-size: 16px;
+            }
         }
     </style>
 </head>
@@ -68,7 +100,6 @@
 </div>
 
 <script>
-    // Получаем параметры из URL
     const urlParams = new URLSearchParams(window.location.search);
     let server = urlParams.get('server');
     let port = urlParams.get('port');
@@ -77,20 +108,33 @@
     const linkElement = document.getElementById('proxyLink');
     const msgDiv = document.getElementById('statusMsg');
 
-    // Проверяем, что все три параметра присутствуют и не пустые
+    function escapeHtml(str) {
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
     if (server && port && secret && server.trim() !== '' && port.trim() !== '' && secret.trim() !== '') {
-        // Собираем прокси-ссылку
         const proxyUrl = `tg://proxy?server=${encodeURIComponent(server)}&port=${encodeURIComponent(port)}&secret=${encodeURIComponent(secret)}`;
         linkElement.href = proxyUrl;
-        msgDiv.innerHTML = `✅ Прокси готов: ${server}:${port}<br>Нажмите кнопку, чтобы подключиться в Telegram.`;
+        // Показываем сервер, порт и секрет с иконками
+        msgDiv.innerHTML = `
+            <p>✅ <strong>Прокси готов</strong></p>
+            <p>📡 Сервер: <code>${escapeHtml(server)}</code></p>
+            <p>🔌 Порт: <code>${escapeHtml(port)}</code></p>
+            <p>🔐 Секрет: <code>${escapeHtml(secret)}</code></p>
+            <p>👇 Нажмите кнопку, чтобы подключиться</p>
+        `;
     } else {
-        // Не хватает данных – показываем ошибку и делаем кнопку неактивной
         linkElement.style.opacity = '0.5';
         linkElement.style.cursor = 'not-allowed';
         linkElement.removeAttribute('href');
         linkElement.addEventListener('click', (e) => e.preventDefault());
         msgDiv.className = 'info error';
-        msgDiv.innerHTML = '❌ Ошибка: не указаны все параметры server, port, secret.<br>Пример правильной ссылки:<br><code>?server=1.2.3.4&port=443&secret=ee1234567890abcdef</code>';
+        msgDiv.innerHTML = '❌ Ошибка: не указаны все параметры server, port, secret.<br><br>Пример ссылки:<br><code>?server=1.2.3.4&port=443&secret=ee1234567890abcdef</code>';
     }
 </script>
 </body>
