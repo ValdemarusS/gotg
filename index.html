@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Прокси Telegram</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #0f172a;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            text-align: center;
+            padding: 20px;
+        }
+        .telegram-btn {
+            background: #2aabee;
+            border: none;
+            border-radius: 40px;
+            padding: 14px 32px;
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.15s ease, background 0.2s;
+            font-family: inherit;
+            display: inline-block;
+            text-decoration: none;
+        }
+        .telegram-btn:hover {
+            background: #1e96d4;
+            transform: scale(1.02);
+        }
+        .telegram-btn:active {
+            transform: scale(0.98);
+        }
+        .info {
+            margin-top: 30px;
+            font-size: 14px;
+            color: #94a3b8;
+            background: #1e293b;
+            padding: 12px 18px;
+            border-radius: 24px;
+            max-width: 400px;
+        }
+        .error {
+            background: #7f1a1a;
+            color: #fecaca;
+            padding: 12px 20px;
+            border-radius: 28px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="#" id="proxyLink" class="telegram-btn">Перейти в Telegram</a>
+    <div id="statusMsg" class="info"></div>
+</div>
+
+<script>
+    // Получаем параметры из URL
+    const urlParams = new URLSearchParams(window.location.search);
+    let server = urlParams.get('server');
+    let port = urlParams.get('port');
+    let secret = urlParams.get('secret');
+
+    const linkElement = document.getElementById('proxyLink');
+    const msgDiv = document.getElementById('statusMsg');
+
+    // Проверяем, что все три параметра присутствуют и не пустые
+    if (server && port && secret && server.trim() !== '' && port.trim() !== '' && secret.trim() !== '') {
+        // Собираем прокси-ссылку
+        const proxyUrl = `tg://proxy?server=${encodeURIComponent(server)}&port=${encodeURIComponent(port)}&secret=${encodeURIComponent(secret)}`;
+        linkElement.href = proxyUrl;
+        msgDiv.innerHTML = `✅ Прокси готов: ${server}:${port}<br>Нажмите кнопку, чтобы подключиться в Telegram.`;
+    } else {
+        // Не хватает данных – показываем ошибку и делаем кнопку неактивной
+        linkElement.style.opacity = '0.5';
+        linkElement.style.cursor = 'not-allowed';
+        linkElement.removeAttribute('href');
+        linkElement.addEventListener('click', (e) => e.preventDefault());
+        msgDiv.className = 'info error';
+        msgDiv.innerHTML = '❌ Ошибка: не указаны все параметры server, port, secret.<br>Пример правильной ссылки:<br><code>?server=1.2.3.4&port=443&secret=ee1234567890abcdef</code>';
+    }
+</script>
+</body>
+</html>
