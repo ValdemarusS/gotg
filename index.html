@@ -23,31 +23,12 @@
             text-align: center;
             padding: 20px;
             max-width: 100%;
-        }
-        .telegram-btn {
-            background: #2aabee;
-            border: none;
-            border-radius: 40px;
-            padding: 14px 32px;
-            font-size: 18px;
-            font-weight: 600;
-            color: white;
-            cursor: pointer;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            transition: transform 0.15s ease, background 0.2s;
-            font-family: inherit;
-            display: inline-block;
-            text-decoration: none;
-        }
-        .telegram-btn:hover {
-            background: #1e96d4;
-            transform: scale(1.02);
-        }
-        .telegram-btn:active {
-            transform: scale(0.98);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         .info {
-            margin-top: 30px;
+            margin-bottom: 30px;
             font-size: 14px;
             color: #94a3b8;
             background: #1e293b;
@@ -60,6 +41,10 @@
         }
         .info p {
             margin: 6px 0;
+        }
+        /* Отступ между первой строкой и остальными */
+        .info p:first-child {
+            margin-bottom: 12px;
         }
         .info code {
             background: #0f172a;
@@ -78,6 +63,29 @@
             background: #4a0e0e;
             color: #ffb3b3;
         }
+        .telegram-btn {
+            background: #2aabee;
+            border: none;
+            border-radius: 40px;
+            padding: 14px 32px;
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.15s ease, background 0.2s;
+            font-family: inherit;
+            display: inline-block;
+            text-decoration: none;
+            margin-top: 10px;
+        }
+        .telegram-btn:hover {
+            background: #1e96d4;
+            transform: scale(1.02);
+        }
+        .telegram-btn:active {
+            transform: scale(0.98);
+        }
         @media (max-width: 480px) {
             .container {
                 padding: 16px;
@@ -85,6 +93,7 @@
             .info {
                 max-width: 90vw;
                 font-size: 13px;
+                margin-bottom: 25px;
             }
             .telegram-btn {
                 padding: 12px 24px;
@@ -95,8 +104,8 @@
 </head>
 <body>
 <div class="container">
-    <a href="#" id="proxyLink" class="telegram-btn">Перейти в Telegram</a>
     <div id="statusMsg" class="info"></div>
+    <a href="#" id="proxyLink" class="telegram-btn">Перейти в Telegram</a>
 </div>
 
 <script>
@@ -120,9 +129,8 @@
     if (server && port && secret && server.trim() !== '' && port.trim() !== '' && secret.trim() !== '') {
         const proxyUrl = `tg://proxy?server=${encodeURIComponent(server)}&port=${encodeURIComponent(port)}&secret=${encodeURIComponent(secret)}`;
         linkElement.href = proxyUrl;
-        // Показываем сервер, порт и секрет с иконками
         msgDiv.innerHTML = `
-            <p>✅ <strong>Прокси готов</strong></p>
+            <p><strong>✅ Прокси готов</strong></p>
             <p>📡 Сервер: <code>${escapeHtml(server)}</code></p>
             <p>🔌 Порт: <code>${escapeHtml(port)}</code></p>
             <p>🔐 Секрет: <code>${escapeHtml(secret)}</code></p>
